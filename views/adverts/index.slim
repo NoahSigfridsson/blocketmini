@@ -1,0 +1,11 @@
+H2 Alla annonser
+
+ul
+    - adverts.each do |ad|
+        li 
+            a href="adverts/#{ad['AdvertId']}" #{ad["title"]}
+
+
+
+
+
