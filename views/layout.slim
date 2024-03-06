@@ -9,5 +9,13 @@ html lang="en"
         nav
             a href="/" Start
             a href="/adverts" Annonser 
-            a href="/adverts/new" Ny annons 
-        ==yield 
+        - if session[:id] != nil 
+            a href="/logout" Logga ut
+            
+        - else 
+            a href="/register" Registrera
+            a href="/login" Logga in
+        
+    
+    
+    ==yield 
