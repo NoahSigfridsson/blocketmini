@@ -70,6 +70,8 @@ get('/adverts') do
     slim(:"adverts/index", locals:{adverts:result})
 end
 
+
+
 get('/adverts/new') do
 
     slim(:"adverts/new")
@@ -83,7 +85,7 @@ post('/adverts/new') do
     category = params[:category_id]
     description = params[:description]
     price = params[:price]
-    user_id = params[:user_id]
+    user_id = session[:id].to_i
     db.execute("INSERT INTO advertisment (title, category, price, description, user_id) VALUES (?,?,?,?,?)", title, category, price, description, user_id)
     redirect("/adverts")
 
