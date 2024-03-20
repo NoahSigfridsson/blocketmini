@@ -14,8 +14,6 @@ get('/register') do
     slim(:"/user/register")
 end
 
-
-
 post('/users/new') do
     username = params[:username]
     password = params[:password]
@@ -70,7 +68,27 @@ get('/adverts') do
     slim(:"adverts/index", locals:{adverts:result})
 end
 
+get('/myadverts') do
+    db = connect_db()
+    result = db.execute("SELECT * FROM advertisment WHERE user_id = ?",session[:id])
+    slim(:"adverts/personal_index", locals:{adverts:result})
+end
 
+get('/adverts/:id') do
+    id = params[:id].to_i
+    db = connect_db()
+    result = db.execute("SELECT * FROM advertisment WHERE AdvertId = ?", id)
+    result_user = db.execute("SELECT username FROM users WHERE id IN (SELECT user_id FROM advertisment WHERE AdvertId = ?)", id).first
+    slim(:"adverts/show", locals:{result:result})
+
+end
+
+post('/adverts/:id/delete') do
+    id = params[:id].to_i
+    db = connect_db()
+    db.execute("DELETE FROM advertisment WHERE AdvertId = ?",id)
+    redirect('/myadverts')
+end
 
 get('/adverts/new') do
 

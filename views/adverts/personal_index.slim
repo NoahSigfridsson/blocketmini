@@ -1,0 +1,9 @@
+H2 Mina annonser
+
+ul
+    - adverts.each do |ad|
+        li 
+            a href="adverts/#{ad['AdvertId']}" #{ad["title"]}
+            
+            form method="POST" action="adverts/#{ad['AdvertId']}/delete"
+                input type="submit" value="Ta bort Annons"

@@ -2,4 +2,4 @@
     - db = connect_db()
     - id = session[:id]
     - name = db.execute("SELECT username FROM users WHERE id =?", id)
-    h1 Välkommen till ShopShop #{name}
+    h1 Välkommen till ShopShop #{name[0][0]}
