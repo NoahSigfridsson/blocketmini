@@ -77,9 +77,9 @@ end
 get('/adverts/:id') do
     id = params[:id].to_i
     db = connect_db()
-    result = db.execute("SELECT * FROM advertisment WHERE AdvertId = ?", id)
+    result = db.execute("SELECT * FROM advertisment WHERE AdvertId = ?", id).first
     result_user = db.execute("SELECT username FROM users WHERE id IN (SELECT user_id FROM advertisment WHERE AdvertId = ?)", id).first
-    slim(:"adverts/show", locals:{result:result})
+    slim(:"adverts/show", locals:{result:result, result_user:result_user})
 
 end
 
