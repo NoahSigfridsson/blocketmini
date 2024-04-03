@@ -1,0 +1,6 @@
+form action="/adverts/#{result["AdvertId"]}/update" method="post"
+    input type="text" name="title" value=result["title"] placeholder="Namn på annons"
+    input type="text" name="category_id" value=result["category"] placeholder="Kategori"
+    input type="text" name="description" value=result["description"] placeholder="Beskrivning"
+    input type="integer" name="price" value=result["price"] placeholder="Pris"
+    input type="submit" value="Uppdatera annons"

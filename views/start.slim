@@ -3,3 +3,9 @@
     - id = session[:id]
     - name = db.execute("SELECT username FROM users WHERE id =?", id)
     h1 Välkommen till ShopShop #{name[0][0]}
+
+- if session[:error]
+    p#fel_meddelande= session.delete(:error)  
+
+- if session[:error]
+    p#fel_meddelande_reg= session.delete(:error)
