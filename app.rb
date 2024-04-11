@@ -41,10 +41,36 @@ get('/logout') do
     redirect('/')
 end
 
+get('/adminpage') do
+    slim(:adminpage)
+end
+
+post('/adminpage') do
+
+end
+
 get('/adverts') do
+    adverts()
+end
+
+get('/category') do
+    categories()
+end
+
+get("/categories/new") do
+    slim(:"categories/new")
+end
+
+post("/categories/new") do
+    category = params[:category]
+    new_category(category)
+end
+
+post('/categories/:id/delete') do
+    id = params[:id].to_i
     db = connect_db()
-    result = db.execute("SELECT * FROM advertisment")
-    slim(:"adverts/index", locals:{adverts:result})
+    db.execute("DELETE FROM category WHERE id = ?",id)
+    redirect('/category')
 end
 
 get('/myadverts') do
@@ -54,24 +80,7 @@ get('/myadverts') do
 end
 
 get('/adverts/new') do
-    db = connect_db()
-    categories = db.execute("SELECT * FROM category")
-    slim(:"adverts/new", locals:{categories:categories})
-
-end
-
-post('/adverts/new') do
-
-    db = connect_db()
-    title = params[:title]
-    description = params[:description]
-    price = params[:price]
-    user_id = session[:id].to_i
-    category = params[:category_id].to_i
-    #category2 = params[:category_id2].to_i
-    db.execute("INSERT INTO advertisment (title, category, price, description, user_id) VALUES (?,?,?,?,?)", title, category, price, description, user_id)
-    redirect("/adverts")
-
+    new_advert(session[:id].to_i)
 end
 
 get('/adverts/:id') do
@@ -88,6 +97,18 @@ get('/adverts/:id/edit') do
     db = connect_db()
     result = db.execute("SELECT * FROM advertisment WHERE AdvertId = ?", id).first
     slim(:"adverts/edit", locals: { result: result })
+end
+
+post('/adverts/new') do
+
+    title = params[:title]
+    description = params[:description]
+    price = params[:price]
+    user_id = session[:id].to_i
+    category = params[:category]
+    category2 = params[:category2]
+    img = params[:img][:tempfile].read if params[:img]
+    new_advert_post(title, description, price, img, category, category2, user_id)
 end
 
 post('/adverts/:id/update') do

@@ -7,17 +7,18 @@ html lang="en"
     body 
 
         nav
+            - p session[:id]
             a href="/" Start
             a href="/adverts" Annonser 
         - if session[:id] != nil 
             a href="/logout" Logga ut
             a href="/myadverts" Mina Annonser 
             a href="/adverts/new" Ny Annons 
-            
+            - if session[:id] == 1
+                a href="/adminpage" Adminsida 
         - else 
             a href="/register" Registrera
             a href="/login" Logga in
-        
     
     
     ==yield 

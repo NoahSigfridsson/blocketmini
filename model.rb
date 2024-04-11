@@ -17,6 +17,13 @@ def time_expired
     Time.now - last_checked_time > 5
 end
 
+
+def require_login
+    if session[:id].nil?
+        redirect('/')
+    end
+end
+
 def new_user(username, password, password_confirm, email)
 
     if expired_reg()
@@ -67,11 +74,62 @@ def login(username, password)
     end
 end
 
+def adverts()
+    db = connect_db()
+    adverts = db.execute("SELECT * FROM advertisment")
+    categories = db.execute("SELECT * From category")
+    adverts.each do |advert|
+        user_info = db.execute("SELECT username FROM users WHERE id = ?", advert['user_id']).first
+        advert['username'] = user_info['username'] if user_info
+    end
 
+    slim(:"/adverts/index", locals:{adverts:adverts, categories:categories})
+end
 
+def new_advert(user_id)
+    require_login()
+    db = connect_db()
+    categories = db.execute("SELECT * FROM category")
+    user_info = db.execute("SELECT * FROM users WHERE id = ?", user_id).first
+    username = user_info['username'] if user_info
+    slim(:"/adverts/new", locals:{username:username, categories:categories})
+end
 
+def new_advert_post(title, description, price, img, category, category2, user_id)
+    if title.nil? || title.strip.empty?
+        session[:error] = "Du måste ha en titel på din annons."
+        redirect('/myadverts')
+    elsif description.nil? || description.strip.empty?
+        session[:error] = "Du måste ha en beskrivning av din annons."
+        redirect('/myadverts')
+    elsif price.nil? || price.strip.empty?
+        session[:error] = "Du måste sätta ett pris på din vara."
+        redirect('/myadverts')
+    elsif img.nil? || img.strip.empty?
+        session[:error] = "Du måste ha en bild på din annons." #lägga till så att man inte måste ha en bild om man inte vill
+        redirect('/myadverts')
+    end
+    
+    db = connect_db()
+    db.execute("INSERT INTO advertisment (title, category, category2, user_id, price, description, img) VALUES (?, ?, ?, ?, ?, ?, ?)", title, category, category2, user_id, price, description, img)
+    advert_id = db.last_insert_row_id
+    db.execute("INSERT INTO advert_category (ad_id, category_id, category_id2) VALUES (?, ?, ?)", advert_id, category, category2)
+    redirect('/myadverts')
+end
 
+def categories()
+    db = connect_db()
+    categories = db.execute("SELECT * FROM category")
+    slim(:"/categories/index", locals:{categories:categories})
+end
 
+def new_category(category)
+    p category
+    p "jani"
+    db = connect_db()
+    db.execute("INSERT INTO category (name) VALUES (?)", category)
+    redirect('/category')
+end
 
 
 

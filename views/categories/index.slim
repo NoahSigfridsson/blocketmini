@@ -1,0 +1,9 @@
+h1 Alla Kategorier 
+
+ul
+    - categories.each do |category|  
+        li
+            p #{category["name"]}
+            
+            form method="POST" action="categories/#{category['id']}/delete"
+                input type="submit" value="Ta bort kategori"
