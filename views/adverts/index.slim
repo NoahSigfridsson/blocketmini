@@ -1,9 +1,17 @@
-H2 Alla annonser
-
+form action="/adverts/filter" method ="post"
+    label for="category_select" Välj specifik kategori:
+    select name="genre"
+        option(value="all") ALLA
+        - categories.each do |category|
+            option( value=category['id'])= category['name']
+    input type="submit" value="Filtrera"
+    
 ul
     - adverts.each do |ad|
         li 
             a href="adverts/#{ad['AdvertId']}" #{ad["title"]}
+
+
 
 
 

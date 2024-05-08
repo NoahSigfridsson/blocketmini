@@ -19,7 +19,10 @@ post('/users/new') do
     password = params[:password]
     password_confirm = params[:password_confirm]
     email = params[:email]
-
+    p username
+    p password
+    p password_confirm
+    p email
     new_user(username, password, password_confirm, email)
     redirect('/')
     
@@ -90,6 +93,11 @@ get('/adverts/:id') do
     result_user = db.execute("SELECT username FROM users WHERE id IN (SELECT user_id FROM advertisment WHERE AdvertId = ?)", id).first
     slim(:"adverts/show", locals:{result:result, result_user:result_user})
 
+end
+
+post('/adverts/filter') do
+    chosen_category = params[:genre]
+    filter_adverts(chosen_category)
 end
 
 get('/adverts/:id/edit') do

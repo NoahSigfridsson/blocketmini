@@ -25,6 +25,10 @@ def require_login
 end
 
 def new_user(username, password, password_confirm, email)
+    p username
+    p password
+    p password_confirm
+    p email
 
     if expired_reg()
         session[:last_checked_time] = Time.now
@@ -124,14 +128,23 @@ def categories()
 end
 
 def new_category(category)
-    p category
-    p "jani"
     db = connect_db()
     db.execute("INSERT INTO category (name) VALUES (?)", category)
     redirect('/category')
 end
 
+def filter_adverts(category)
+    db = connect_db()
+    if category == "all"
+        adverts = db.execute("SELECT * FROM advertisment")
+    else
+        category_id = db.execute("SELECT id FROM category WHERE name = ?", category).first
+        adverts = db.execute("SELECT * FROM advertisment WHERE AdvertId IN (SELECT AdvertId FROM advert_category WHERE category = ? OR category2 = ?)", category_id)
+    end
+    categories = db.execute("SELECT * FROM category")
 
+    slim(:"/adverts/index", locals:{adverts:adverts, categories:categories})
+end
 
 
 
